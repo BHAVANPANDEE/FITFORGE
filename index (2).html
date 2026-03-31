@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitForge — Train Without Limits</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0eef8;
+    --muted: #7a7890;
+    --accent: #c8f542;
+    --accent2: #ff4d6d;
+    --accent3: #7b5cff;
+    --glow: rgba(200,245,66,0.15);
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--text); }
+
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    padding: 11px 26px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .nav-cta:hover { background: #d4f55c; transform: translateY(-1px); }
+
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none;
+  }
+
+  .hamburger span { width: 24px; height: 2px; background: var(--text); transition: all 0.3s; }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(123,92,255,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,245,66,0.06) 0%, transparent 70%);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-content { position: relative; z-index: 2; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,245,66,0.08);
+    border: 1px solid rgba(200,245,66,0.2);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-badge::before { content: '●'; font-size: 8px; animation: pulse 2s infinite; }
+
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(70px, 9vw, 130px);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .hero-title .highlight {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--accent);
+  }
+
+  .hero-title .accent-line { color: var(--accent); }
+
+  .hero-desc {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 460px;
+    line-height: 1.7;
+    margin-bottom: 44px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px; align-items: center;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    padding: 15px 36px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+
+  .btn-primary:hover::after { transform: translateX(0); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(200,245,66,0.25); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 15px 32px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.25s;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .play-icon {
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--muted);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    color: var(--muted);
+    transition: all 0.25s;
+  }
+
+  .btn-ghost:hover .play-icon { border-color: var(--accent); color: var(--accent); }
+
+  .hero-stats {
+    display: flex; gap: 40px; margin-top: 64px;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  .hero-stat {}
+  .hero-stat .num {
+    font-family: var(--font-display);
+    font-size: 42px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .hero-stat .label { font-size: 12px; color: var(--muted); letter-spacing: 0.5px; margin-top: 4px; }
+
+  /* Hero visual */
+  .hero-visual {
+    position: relative; z-index: 2;
+    display: flex; justify-content: flex-end;
+    animation: fadeLeft 1s 0.2s ease both;
+  }
+
+  .hero-card-stack {
+    position: relative; width: 400px; height: 500px;
+  }
+
+  .hero-main-card {
+    position: absolute;
+    top: 0; right: 0;
+    width: 340px; height: 440px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  .hero-card-img {
+    flex: 1;
+    background: 
+      linear-gradient(180deg, transparent 40%, rgba(10,10,15,0.9) 100%),
+      linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-card-img::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 60% 40%, rgba(123,92,255,0.3), transparent 60%);
+  }
+
+  .hero-card-body { padding: 20px 24px; }
+
+  .hero-card-tag {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--accent); letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+
+  .hero-card-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .hero-card-meta { font-size: 12px; color: var(--muted); }
+
+  .live-badge {
+    position: absolute; top: 20px; left: 20px;
+    background: var(--accent2);
+    color: white; font-size: 10px;
+    font-weight: 700; letter-spacing: 1px;
+    padding: 4px 10px; border-radius: 2px;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  .live-badge::before { content: '●'; font-size: 7px; animation: pulse 1s infinite; }
+
+  .hero-float-card {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+
+  .fc-1 {
+    bottom: 60px; left: 0;
+    width: 180px;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .fc-2 {
+    top: 40px; left: 10px;
+    width: 160px;
+    animation: float 4s 2s ease-in-out infinite;
+  }
+
+  .fc-label { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 6px; text-transform: uppercase; }
+  .fc-value { font-family: var(--font-display); font-size: 28px; color: var(--accent); }
+  .fc-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .fc-trainers { display: flex; gap: -6px; margin-top: 8px; }
+  .fc-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2px solid var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    margin-left: -6px;
+  }
+  .fc-avatar:first-child { margin-left: 0; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ─── SECTIONS COMMON ─── */
+  section { padding: 100px 48px; }
+
+  .section-tag {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;
+    color: var(--accent); text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .section-tag::before { content: '//'; opacity: 0.4; }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(44px, 6vw, 80px);
+    line-height: 0.95;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+
+  .section-desc {
+    font-size: 16px; color: var(--muted); max-width: 520px; line-height: 1.7;
+  }
+
+  /* ─── WORKOUT TYPES ─── */
+  #workouts {
+    background: var(--surface);
+    position: relative;
+  }
+
+  .workouts-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 60px;
+  }
+
+  .workout-tabs {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 48px;
+  }
+
+  .workout-tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 9px 20px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .workout-tab.active, .workout-tab:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0a0a0f;
+  }
+
+  .workout-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  .workout-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .workout-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+
+  .workout-card:hover::before { transform: scaleX(1); }
+  .workout-card:hover { border-color: rgba(200,245,66,0.2); transform: translateY(-4px); }
+
+  .workout-icon {
+    font-size: 40px; margin-bottom: 16px; display: block;
+  }
+
+  .workout-name {
+    font-family: var(--font-display); font-size: 20px; letter-spacing: 1px; margin-bottom: 8px;
+  }
+
+  .workout-count {
+    font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+  }
+
+  /* ─── CLASSES (Booking) ─── */
+  #classes { position: relative; }
+
+  .classes-layout {
+    display: grid; grid-template-columns: 1fr 380px; gap: 48px; margin-top: 64px;
+  }
+
+  .class-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .class-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 20px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .class-item:hover {
+    border-color: rgba(200,245,66,0.25);
+    background: var(--surface2);
+    transform: translateX(4px);
+  }
+
+  .class-item.featured { border-color: rgba(200,245,66,0.3); background: rgba(200,245,66,0.03); }
+
+  .class-emoji { font-size: 36px; }
+
+  .class-info {}
+  .class-name { font-size: 16px; font-weight: 600; margin-bottom: 5px; }
+  .class-meta { font-size: 13px; color: var(--muted); display: flex; gap: 16px; }
+  .class-meta span { display: flex; align-items: center; gap: 4px; }
+
+  .class-book {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text); padding: 10px 20px;
+    font-family: var(--font-body); font-size: 13px; font-weight: 500;
+    cursor: pointer; border-radius: 2px; transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .class-book:hover, .class-item.featured .class-book {
+    background: var(--accent); border-color: var(--accent); color: #0a0a0f;
+  }
+
+  /* Schedule sidebar */
+  .schedule-sidebar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    position: sticky; top: 100px; height: fit-content;
+  }
+
+  .sidebar-title {
+    font-family: var(--font-display); font-size: 24px; letter-spacing: 1px; margin-bottom: 24px;
+  }
+
+  .mini-calendar { margin-bottom: 28px; }
+
+  .cal-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+    font-size: 14px; font-weight: 600;
+  }
+
+  .cal-nav { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; transition: color 0.2s; }
+  .cal-nav:hover { color: var(--accent); }
+
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
+    color: var(--muted);
+  }
+
+  .cal-day:hover { background: var(--surface2); color: var(--text); }
+  .cal-day.active { background: var(--accent); color: #0a0a0f; font-weight: 700; border-radius: 50%; }
+  .cal-day.has-class { position: relative; color: var(--text); }
+  .cal-day.has-class::after { content: ''; position: absolute; bottom: 3px; width: 4px; height: 4px; background: var(--accent3); border-radius: 50%; }
+  .cal-day.header { cursor: default; font-weight: 600; font-size: 10px; letter-spacing: 0.5px; color: var(--muted); }
+
+  .time-slots { display: flex; flex-direction: column; gap: 8px; }
+
+  .time-slot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .time-slot:hover { border-color: rgba(200,245,66,0.3); }
+  .time-slot.booked { opacity: 0.4; cursor: not-allowed; }
+
+  .slot-time { font-family: var(--font-mono); font-size: 13px; color: var(--accent); }
+  .slot-name { font-size: 13px; color: var(--muted); }
+  .slot-spots { font-size: 11px; color: var(--muted); }
+
+  /* ─── TRAINERS ─── */
+  #trainers {
+    background: var(--surface);
+  }
+
+  .trainers-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
+
+  .trainer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+  .trainer-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .trainer-card:hover { transform: translateY(-6px); border-color: rgba(200,245,66,0.2); }
+  .trainer-card:hover .trainer-overlay { opacity: 1; }
+
+  .trainer-photo {
+    height: 260px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .trainer-card:nth-child(1) .trainer-photo { background: linear-gradient(135deg, #1a0533, #3d1a6e); }
+  .trainer-card:nth-child(2) .trainer-photo { background: linear-gradient(135deg, #001a0a, #0a3d1a); }
+  .trainer-card:nth-child(3) .trainer-photo { background: linear-gradient(135deg, #1a0a00, #3d1a00); }
+  .trainer-card:nth-child(4) .trainer-photo { background: linear-gradient(135deg, #00101a, #003d5c); }
+
+  .trainer-overlay {
+    position: absolute; inset: 0;
+    background: rgba(200,245,66,0.08);
+    border-top: 2px solid var(--accent);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 20px;
+  }
+
+  .trainer-follow {
+    background: var(--accent); color: #0a0a0f;
+    border: none; padding: 10px 24px;
+    font-family: var(--font-body); font-size: 13px; font-weight: 600;
+    cursor: pointer; border-radius: 2px;
+  }
+
+  .trainer-body { padding: 20px 22px; }
+  .trainer-name { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+  .trainer-spec { font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+  .trainer-stats { display: flex; gap: 20px; }
+  .trainer-stat { }
+  .trainer-stat .num { font-family: var(--font-mono); font-size: 14px; color: var(--text); }
+  .trainer-stat .label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .trainer-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+
+  .tag {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); font-size: 10px; padding: 3px 10px;
+    border-radius: 2px; letter-spacing: 0.3px;
+  }
+
+  /* ─── DASHBOARD ─── */
+  #dashboard { position: relative; }
+
+  .dashboard-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+    margin-top: 64px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 600px;
+  }
+
+  .dash-sidebar {
+    background: var(--surface2);
+    border-right: 1px solid var(--border);
+    padding: 28px;
+  }
+
+  .dash-user { display: flex; align-items: center; gap: 14px; margin-bottom: 36px; }
+  .dash-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent3), var(--accent2));
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    border: 2px solid var(--accent);
+  }
+
+  .dash-user-info {}
+  .dash-user-name { font-size: 15px; font-weight: 600; }
+  .dash-user-plan {
+    font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 1px;
+  }
+
+  .dash-nav { display: flex; flex-direction: column; gap: 4px; }
+
+  .dash-nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: 4px;
+    font-size: 14px; color: var(--muted); cursor: pointer;
+    transition: all 0.2s; border: 1px solid transparent;
+  }
+
+  .dash-nav-item:hover { color: var(--text); background: var(--surface); }
+  .dash-nav-item.active { color: var(--accent); background: rgba(200,245,66,0.06); border-color: rgba(200,245,66,0.15); }
+
+  .dash-main { padding: 32px; }
+  .dash-main-title { font-family: var(--font-display); font-size: 32px; letter-spacing: 1px; margin-bottom: 28px; }
+
+  .dash-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+
+  .kpi {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 18px 20px;
+  }
+
+  .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .kpi-value { font-family: var(--font-display); font-size: 36px; color: var(--text); line-height: 1; }
+  .kpi-unit { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .kpi-delta {
+    font-family: var(--font-mono); font-size: 11px; margin-top: 8px;
+    color: var(--accent);
+  }
+
+  .kpi-delta.down { color: var(--accent2); }
+
+  /* Fake chart bars */
+  .dash-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  .chart-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 20px 22px;
+  }
+
+  .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 20px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 120px; }
+
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+
+  .bar {
+    width: 100%; border-radius: 2px 2px 0 0;
+    background: var(--accent3); transition: all 0.5s;
+    position: relative; cursor: pointer;
+  }
+
+  .bar:hover { background: var(--accent); }
+
+  .bar-label { font-size: 10px; color: var(--muted); font-family: var(--font-mono); }
+
+  /* Ring chart */
+  .ring-chart { display: flex; align-items: center; gap: 24px; }
+
+  .ring-svg { width: 100px; height: 100px; flex-shrink: 0; }
+
+  .ring-legend { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+  .ring-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .ring-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ─── FEATURES ─── */
+  #features { }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 64px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+
+  .feature-card:hover { border-color: rgba(200,245,66,0.2); transform: translateY(-3px); }
+
+  .feature-card.large { grid-column: span 2; }
+
+  .feature-num {
+    font-family: var(--font-display);
+    font-size: 80px;
+    color: rgba(255,255,255,0.03);
+    position: absolute; top: -10px; right: 20px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    background: rgba(200,245,66,0.08);
+    border: 1px solid rgba(200,245,66,0.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 20px;
+  }
+
+  .feature-title { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
+  .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  .feature-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+  .feature-list li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; color: var(--muted); list-style: none;
+  }
+
+  .feature-list li::before { content: '→'; color: var(--accent); font-size: 12px; }
+
+  /* ─── APP SECTION ─── */
+  #app {
+    background: var(--surface);
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+
+  .app-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(123,92,255,0.15), transparent 70%);
+  }
+
+  #app .section-tag, #app .section-title, #app .section-desc { margin-left: auto; margin-right: auto; text-align: center; }
+  #app .section-desc { margin-bottom: 48px; }
+
+  .app-badges { display: flex; justify-content: center; gap: 16px; margin-bottom: 64px; position: relative; z-index: 2; }
+
+  .app-badge {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 14px 24px; border-radius: 8px; cursor: pointer; transition: all 0.25s;
+    text-decoration: none; color: var(--text);
+  }
+
+  .app-badge:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .app-badge-icon { font-size: 28px; }
+
+  .app-badge-text {}
+  .app-badge-small { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .app-badge-name { font-size: 16px; font-weight: 600; }
+
+  .app-phones {
+    display: flex; justify-content: center; align-items: flex-end; gap: 16px;
+    margin-top: 20px; position: relative; z-index: 2;
+  }
+
+  .phone-mockup {
+    width: 200px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 28px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .phone-mockup.main {
+    width: 220px;
+    transform: translateY(-20px);
+    border-color: rgba(200,245,66,0.2);
+    box-shadow: 0 0 60px rgba(200,245,66,0.08);
+  }
+
+  .phone-screen {
+    padding: 14px;
+    min-height: 360px;
+    background: var(--bg);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .phone-screen.main-screen { min-height: 400px; }
+
+  .phone-ui-bar {
+    height: 8px; border-radius: 4px;
+    background: var(--surface2);
+  }
+
+  .phone-ui-bar.accent { background: rgba(200,245,66,0.3); width: 60%; }
+  .phone-ui-bar.short { width: 40%; }
+
+  .phone-ui-card {
+    background: var(--surface2); border-radius: 8px; padding: 12px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .phone-ui-num { font-family: var(--font-display); font-size: 28px; color: var(--accent); }
+  .phone-ui-small { height: 6px; border-radius: 3px; background: var(--surface); width: 80%; }
+
+  .phone-notch {
+    width: 80px; height: 24px;
+    background: var(--bg);
+    margin: 0 auto;
+    border-radius: 0 0 14px 14px;
+  }
+
+  /* ─── CONSIDERATIONS ─── */
+  #considerations { }
+
+  .consider-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+
+  .consider-card {
+    border: 1px solid var(--border); border-radius: 8px; padding: 28px;
+    position: relative;
+  }
+
+  .consider-icon { font-size: 32px; margin-bottom: 16px; }
+  .consider-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+  .consider-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  .consider-card.pro { background: rgba(200,245,66,0.02); border-color: rgba(200,245,66,0.12); }
+  .consider-card.warn { background: rgba(255,77,109,0.02); border-color: rgba(255,77,109,0.12); }
+
+  /* ─── PRICING ─── */
+  #pricing { background: var(--surface); }
+
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 64px; }
+
+  .pricing-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 36px 32px;
+    position: relative; transition: all 0.3s;
+  }
+
+  .pricing-card:hover { transform: translateY(-4px); }
+
+  .pricing-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 60px rgba(200,245,66,0.08);
+  }
+
+  .popular-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #0a0a0f;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; padding: 4px 14px; border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .plan-name { font-family: var(--font-display); font-size: 28px; letter-spacing: 1px; margin-bottom: 8px; }
+  .plan-desc { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+
+  .plan-price { margin-bottom: 32px; }
+  .plan-price .amount { font-family: var(--font-display); font-size: 60px; color: var(--accent); line-height: 1; }
+  .plan-price .per { font-size: 14px; color: var(--muted); }
+
+  .plan-features { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+
+  .plan-feature {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; color: var(--muted);
+  }
+
+  .plan-feature .check { color: var(--accent); font-size: 14px; }
+  .plan-feature .cross { color: var(--accent2); font-size: 14px; opacity: 0.5; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    padding: 64px 48px 32px;
+  }
+
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+
+  .footer-brand .nav-logo { font-size: 32px; display: block; margin-bottom: 16px; }
+  .footer-brand p { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 280px; }
+
+  .footer-col {}
+  .footer-heading { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .footer-bottom p { font-size: 13px; color: var(--muted); }
+
+  .footer-social { display: flex; gap: 12px; }
+  .social-btn {
+    width: 36px; height: 36px; border: 1px solid var(--border);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s; font-size: 15px;
+    background: none; color: var(--muted);
+  }
+
+  .social-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── TICKER ─── */
+  .ticker-wrap {
+    overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 14px 0; background: var(--surface2);
+  }
+
+  .ticker {
+    display: flex; gap: 0; width: max-content;
+    animation: ticker 30s linear infinite;
+  }
+
+  .ticker-inner { display: flex; gap: 0; }
+
+  .ticker-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 32px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+    letter-spacing: 0.5px; white-space: nowrap;
+  }
+
+  .ticker-item .dot { color: var(--accent); }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ─── MOBILE MENU ─── */
+  .mobile-menu {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: rgba(10,10,15,0.98);
+    flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a {
+    font-family: var(--font-display); font-size: 48px; letter-spacing: 2px;
+    color: var(--text); text-decoration: none; transition: color 0.2s;
+  }
+
+  .mobile-menu a:hover { color: var(--accent); }
+
+  .mobile-close {
+    position: absolute; top: 24px; right: 24px;
+    background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+
+    section { padding: 80px 24px; }
+
+    #hero { grid-template-columns: 1fr; padding: 120px 24px 80px; }
+    .hero-visual { display: none; }
+    .hero-stats { gap: 24px; }
+
+    .workout-grid { grid-template-columns: repeat(3, 1fr); }
+    .classes-layout { grid-template-columns: 1fr; }
+    .schedule-sidebar { position: static; }
+    .trainer-grid { grid-template-columns: repeat(2, 1fr); }
+    .dashboard-layout { grid-template-columns: 1fr; }
+    .dash-sidebar { display: none; }
+    .dash-kpis { grid-template-columns: repeat(2, 1fr); }
+    .dash-charts { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card.large { grid-column: span 1; }
+    .consider-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: span 2; }
+    .app-phones { display: none; }
+    .trainer-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .nav-cta { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .workout-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-actions { flex-direction: column; align-items: flex-start; }
+    .hero-stats { flex-wrap: wrap; gap: 20px; }
+    .dash-kpis { grid-template-columns: 1fr 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-brand { grid-column: span 1; }
+  }
+
+  /* ─── SMOOTH FADE IN ON SCROLL ─── */
+  .fade-in {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">FIT<span>FORGE</span></a>
+  <ul class="nav-links">
+    <li><a href="#workouts">Workouts</a></li>
+    <li><a href="#classes">Classes</a></li>
+    <li><a href="#trainers">Trainers</a></li>
+    <li><a href="#dashboard">Progress</a></li>
+    <li><a href="#app">App</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <button class="nav-cta" onclick="scrollTo('pricing')">Start Free Trial</button>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMenu()">✕</button>
+  <a href="#workouts" onclick="toggleMenu()">Workouts</a>
+  <a href="#classes" onclick="toggleMenu()">Classes</a>
+  <a href="#trainers" onclick="toggleMenu()">Trainers</a>
+  <a href="#dashboard" onclick="toggleMenu()">Progress</a>
+  <a href="#app" onclick="toggleMenu()">App</a>
+  <a href="#pricing" onclick="toggleMenu()">Pricing</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">LIVE NOW — 847 MEMBERS TRAINING</div>
+    <h1 class="hero-title">
+      TRAIN<br>
+      <span class="highlight">WITHOUT</span><br>
+      <span class="accent-line">LIMITS</span>
+    </h1>
+    <p class="hero-desc">
+      World-class fitness at your fingertips. Live virtual classes, expert trainers from 40+ countries, and AI-powered progress tracking — all from wherever you are.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('classes').scrollIntoView({behavior:'smooth'})">Book a Class</button>
+      <button class="btn-ghost">
+        <div class="play-icon">▶</div>
+        Watch Demo
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">50K+</div>
+        <div class="label">Active Members</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">1,200</div>
+        <div class="label">Video Classes</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">180+</div>
+        <div class="label">Expert Trainers</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-card-stack">
+      <!-- Floating cards -->
+      <div class="hero-float-card fc-2">
+        <div class="fc-label">Top Trainers</div>
+        <div class="fc-trainers">
+          <div class="fc-avatar">🧘</div>
+          <div class="fc-avatar">💪</div>
+          <div class="fc-avatar">🏃</div>
+          <div class="fc-avatar">🥊</div>
+        </div>
+        <div class="fc-sub" style="margin-top:8px;font-size:11px;color:var(--muted)">+180 worldwide</div>
+      </div>
+
+      <!-- Main card -->
+      <div class="hero-main-card">
+        <div class="hero-card-img">
+          <span>🏋️</span>
+          <div class="live-badge">LIVE</div>
+        </div>
+        <div class="hero-card-body">
+          <div class="hero-card-tag">// STRENGTH & CONDITIONING</div>
+          <div class="hero-card-title">Power Lift Pro</div>
+          <div class="hero-card-meta">Starts in 12 min · 43 joined · Coach Alex</div>
+        </div>
+      </div>
+
+      <div class="hero-float-card fc-1">
+        <div class="fc-label">Weekly Streak</div>
+        <div class="fc-value">14</div>
+        <div class="fc-sub">days in a row 🔥</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-inner">
+      <div class="ticker-item"><span class="dot">●</span> LIVE YOGA — STARTS IN 5 MIN</div>
+      <div class="ticker-item"><span class="dot">●</span> NEW: HIIT PILATES FUSION</div>
+      <div class="ticker-item"><span class="dot">●</span> COACH SARAH — 500 SESSIONS MILESTONE</div>
+      <div class="ticker-item"><span class="dot">●</span> APP UPDATE: AI FORM CHECKER NOW LIVE</div>
+      <div class="ticker-item"><span class="dot">●</span> WEEKEND MARATHON — 48HR CHALLENGE</div>
+      <div class="ticker-item"><span class="dot">●</span> 847 MEMBERS TRAINING RIGHT NOW</div>
+      <div class="ticker-item"><span class="dot">●</span> NEW TRAINER: ELENA FROM TOKYO</div>
+      <div class="ticker-item"><span class="dot">●</span> STRENGTH BOOTCAMP SOLD OUT — JOIN WAITLIST</div>
+    </div>
+    <div class="ticker-inner" aria-hidden="true">
+      <div class="ticker-item"><span class="dot">●</span> LIVE YOGA — STARTS IN 5 MIN</div>
+      <div class="ticker-item"><span class="dot">●</span> NEW: HIIT PILATES FUSION</div>
+      <div class="ticker-item"><span class="dot">●</span> COACH SARAH — 500 SESSIONS MILESTONE</div>
+      <div class="ticker-item"><span class="dot">●</span> APP UPDATE: AI FORM CHECKER NOW LIVE</div>
+      <div class="ticker-item"><span class="dot">●</span> WEEKEND MARATHON — 48HR CHALLENGE</div>
+      <div class="ticker-item"><span class="dot">●</span> 847 MEMBERS TRAINING RIGHT NOW</div>
+      <div class="ticker-item"><span class="dot">●</span> NEW TRAINER: ELENA FROM TOKYO</div>
+      <div class="ticker-item"><span class="dot">●</span> STRENGTH BOOTCAMP SOLD OUT — JOIN WAITLIST</div>
+    </div>
+  </div>
+</div>
+
+<!-- WORKOUTS -->
+<section id="workouts">
+  <div class="workouts-header fade-in">
+    <div>
+      <div class="section-tag">WORKOUT TYPES</div>
+      <h2 class="section-title">FIND YOUR<br>DISCIPLINE</h2>
+    </div>
+    <p class="section-desc" style="max-width:320px">From beginner-friendly flows to elite-level training — every workout type, every intensity.</p>
+  </div>
+
+  <div class="workout-tabs fade-in">
+    <button class="workout-tab active" onclick="filterTab(this, 'all')">All</button>
+    <button class="workout-tab" onclick="filterTab(this, 'live')">🔴 Live Now</button>
+    <button class="workout-tab" onclick="filterTab(this, 'recorded')">📹 Recorded</button>
+    <button class="workout-tab" onclick="filterTab(this, 'personal')">👤 Personal</button>
+  </div>
+
+  <div class="workout-grid fade-in">
+    <div class="workout-card">
+      <span class="workout-icon">🏋️</span>
+      <div class="workout-name">STRENGTH</div>
+      <div class="workout-count">247 classes</div>
+    </div>
+    <div class="workout-card">
+      <span class="workout-icon">⚡</span>
+      <div class="workout-name">HIIT</div>
+      <div class="workout-count">183 classes</div>
+    </div>
+    <div class="workout-card">
+      <span class="workout-icon">🧘</span>
+      <div class="workout-name">YOGA</div>
+      <div class="workout-count">312 classes</div>
+    </div>
+    <div class="workout-card">
+      <span class="workout-icon">🤸</span>
+      <div class="workout-name">PILATES</div>
+      <div class="workout-count">128 classes</div>
+    </div>
+    <div class="workout-card">
+      <span class="workout-icon">🏃</span>
+      <div class="workout-name">CARDIO</div>
+      <div class="workout-count">94 classes</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLASSES / BOOKING -->
+<section id="classes">
+  <div class="fade-in">
+    <div class="section-tag">CLASS BOOKING</div>
+    <h2 class="section-title">SCHEDULE<br>YOUR NEXT<br>SESSION</h2>
+    <p class="section-desc">Live virtual classes, pre-recorded sessions, and 1-on-1 personal training — all in one place.</p>
+  </div>
+
+  <div class="classes-layout fade-in">
+    <div class="class-list">
+      <div class="class-item featured">
+        <div class="class-emoji">🏋️</div>
+        <div class="class-info">
+          <div class="class-name">Power Lift Pro — Advanced</div>
+          <div class="class-meta">
+            <span>🔴 LIVE · TODAY 18:00</span>
+            <span>⏱ 45 min</span>
+            <span>👥 12 spots left</span>
+          </div>
+        </div>
+        <button class="class-book">Book Now</button>
+      </div>
+      <div class="class-item">
+        <div class="class-emoji">🧘</div>
+        <div class="class-info">
+          <div class="class-name">Morning Flow Yoga</div>
+          <div class="class-meta">
+            <span>📹 On-Demand</span>
+            <span>⏱ 30 min</span>
+            <span>🌟 4.9</span>
+          </div>
+        </div>
+        <button class="class-book">Watch Now</button>
+      </div>
+      <div class="class-item">
+        <div class="class-emoji">⚡</div>
+        <div class="class-info">
+          <div class="class-name">HIIT Cardio Blast</div>
+          <div class="class-meta">
+            <span>🔴 LIVE · TODAY 20:00</span>
+            <span>⏱ 40 min</span>
+            <span>👥 5 spots left</span>
+          </div>
+        </div>
+        <button class="class-book">Book Now</button>
+      </div>
+      <div class="class-item">
+        <div class="class-emoji">🤸</div>
+        <div class="class-info">
+          <div class="class-name">Core & Pilates Fusion</div>
+          <div class="class-meta">
+            <span>📹 On-Demand</span>
+            <span>⏱ 55 min</span>
+            <span>🌟 4.7</span>
+          </div>
+        </div>
+        <button class="class-book">Watch Now</button>
+      </div>
+      <div class="class-item">
+        <div class="class-emoji">👤</div>
+        <div class="class-info">
+          <div class="class-name">1-on-1 with Coach Maria</div>
+          <div class="class-meta">
+            <span>🎯 Personal Training</span>
+            <span>⏱ 60 min</span>
+            <span>📅 Next: Tomorrow</span>
+          </div>
+        </div>
+        <button class="class-book">Request</button>
+      </div>
+      <div class="class-item">
+        <div class="class-emoji">🏃</div>
+        <div class="class-info">
+          <div class="class-name">5K Runner's Foundation</div>
+          <div class="class-meta">
+            <span>📹 On-Demand</span>
+            <span>⏱ 35 min</span>
+            <span>🌟 4.8</span>
+          </div>
+        </div>
+        <button class="class-book">Watch Now</button>
+      </div>
+    </div>
+
+    <!-- Schedule Sidebar -->
+    <div class="schedule-sidebar">
+      <div class="sidebar-title">APRIL SCHEDULE</div>
+
+      <div class="mini-calendar">
+        <div class="cal-header">
+          <button class="cal-nav">‹</button>
+          <span style="font-size:14px;font-weight:600">April 2026</span>
+          <button class="cal-nav">›</button>
+        </div>
+        <div class="cal-grid" id="calendar"></div>
+      </div>
+
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Today's Slots</div>
+      <div class="time-slots">
+        <div class="time-slot booked">
+          <span class="slot-time">07:00</span>
+          <span class="slot-name">Morning Yoga</span>
+          <span class="slot-spots">Full</span>
+        </div>
+        <div class="time-slot">
+          <span class="slot-time">10:00</span>
+          <span class="slot-name">Core Pilates</span>
+          <span class="slot-spots">8 left</span>
+        </div>
+        <div class="time-slot">
+          <span class="slot-time">12:30</span>
+          <span class="slot-name">HIIT Lunch</span>
+          <span class="slot-spots">14 left</span>
+        </div>
+        <div class="time-slot">
+          <span class="slot-time">18:00</span>
+          <span class="slot-name">Power Lift</span>
+          <span class="slot-spots">12 left</span>
+        </div>
+        <div class="time-slot">
+          <span class="slot-time">20:00</span>
+          <span class="slot-name">Evening Flow</span>
+          <span class="slot-spots">20 left</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINERS -->
+<section id="trainers">
+  <div class="trainers-header fade-in">
+    <div>
+      <div class="section-tag">EXPERT TRAINERS</div>
+      <h2 class="section-title">WORLD-CLASS<br>COACHES</h2>
+    </div>
+    <p class="section-desc" style="max-width:300px">Train with certified coaches from Tokyo to Toronto. 180+ trainers across 40 countries.</p>
+  </div>
+
+  <div class="trainer-grid fade-in">
+    <div class="trainer-card">
+      <div class="trainer-photo">
+        🧘‍♀️
+        <div class="trainer-overlay">
+          <button class="trainer-follow">View Profile</button>
+        </div>
+      </div>
+      <div class="trainer-body">
+        <div class="trainer-name">Elena Nakamura</div>
+        <div class="trainer-spec">YOGA & MINDFULNESS</div>
+        <div class="trainer-stats">
+          <div class="trainer-stat">
+            <div class="num">8yr</div>
+            <div class="label">Experience</div>
+          </div>
+          <div class="trainer-stat">
+            <div class="num">2.4K</div>
+            <div class="label">Students</div>
+          </div>
+          <div class="trainer-stat">
+            <div class="num">4.9★</div>
+            <div class="label">Rating</div>
+          </div>
+        </div>
+        <div class="trainer-tags">
+          <span class="tag">Vinyasa</span>
+          <span class="tag">Yin</span>
+          <span class="tag">Meditation</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trainer-card">
+      <div class="trainer-photo">
+        💪
+        <div class="trainer-overlay">
+          <button class="trainer-follow">View Profile</button>
+        </div>
+      </div>
+      <div class="trainer-body">
+        <div class="trainer-name">Marcus Williams</div>
+        <div class="trainer-spec">STRENGTH & CONDITIONING</div>
+        <div class="trainer-stats">
+          <div class="trainer-stat">
+            <div class="num">12yr</div>
+            <div class="label">Experience</div>
+          </div>
+          <div class="trainer-stat">
+            <div class="num">3.1K</div>
+            <div class="label">Students</div>
+          </div>
+          <div class="trainer-stat">
+            <div class="num">4.8★</div>
+            <div class="label">Rating</div>
+          </div>
+        </div>
+        <div class="trainer-tags">
+          <span class="tag">Powerlifting</span>
+          <span class="tag">HIIT</span>
+          <span class="tag">Nutrition</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trainer-card">
+      <div class="trainer-photo">
+        🤸‍♀️
+        <div class="trainer-overlay">
+          <button class="trainer-follow">View Profile</button>
+        </div>
+      </div>
+      <div class="trainer-body">
+        <div class="trainer-name">Sofia Rossi</div>
+        <div class="trainer-spec">PILATES & FLEXIBILITY</div>
+        <div class="trainer-stats">
+          <div class="trainer-stat">
+            <div class="num">6yr</div>
+            <div class="label">Experience</div>
+          </div>
+          <div class="trainer-stat">
+            <div class="num">1.8K</div>
+            <div class="label">Students</div>
+          </div>
+          <div class="trainer-stat">
+            <div class="num">5.0★</div>
+            <div class="label">Rating</div>
+          </div>
+        </div>
+        <div class="trainer-tags">
+          <span class="tag">Classical</span>
+          <span class="tag">Reformer</span>
+          <span class="tag">Rehab</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trainer-card">
+      <div class="trainer-photo">
+        🏃‍♂️
+        <div class="trainer-overlay">
+          <button class="trainer-follow">View Profile</button>
+        </div>
+      </div>
+      <div class="trainer-body">
+        <div class="trainer-name">James Okafor</div>
+        <div class="trainer-spec">CARDIO & ENDURANCE</div>
+        <div class="trainer-stats">
+          <div class="trainer-stat">
+            <div class="num">10yr</div>
+            <div class="label">Experience</div>
+          </div>
+          <div class="trainer-stat">
+            <div class="num">2.9K</div>
+            <div class="label">Students</div>
+          </div>
+          <div class="trainer-stat">
+            <div class="num">4.7★</div>
+            <div class="label">Rating</div>
+          </div>
+        </div>
+        <div class="trainer-tags">
+          <span class="tag">Running</span>
+          <span class="tag">Cycling</span>
+          <span class="tag">HIIT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+  <div class="fade-in">
+    <div class="section-tag">PROGRESS TRACKING</div>
+    <h2 class="section-title">YOUR FITNESS<br>DASHBOARD</h2>
+    <p class="section-desc">Real-time analytics, streak tracking, and AI-powered insights to keep you on your goals.</p>
+  </div>
+
+  <div class="dashboard-layout fade-in">
+    <!-- Sidebar -->
+    <div class="dash-sidebar">
+      <div class="dash-user">
+        <div class="dash-avatar">🔥</div>
+        <div class="dash-user-info">
+          <div class="dash-user-name">Alex Johnson</div>
+          <div class="dash-user-plan">PRO MEMBER</div>
+        </div>
+      </div>
+      <nav class="dash-nav">
+        <div class="dash-nav-item active">📊 Overview</div>
+        <div class="dash-nav-item">🏋️ Workouts</div>
+        <div class="dash-nav-item">📅 Schedule</div>
+        <div class="dash-nav-item">🥗 Nutrition</div>
+        <div class="dash-nav-item">😴 Recovery</div>
+        <div class="dash-nav-item">🏆 Achievements</div>
+        <div class="dash-nav-item">👤 Profile</div>
+      </nav>
+    </div>
+
+    <!-- Main -->
+    <div class="dash-main">
+      <div class="dash-main-title">OVERVIEW</div>
+
+      <div class="dash-kpis">
+        <div class="kpi">
+          <div class="kpi-label">Workouts This Week</div>
+          <div class="kpi-value">5</div>
+          <div class="kpi-unit">of 6 goal</div>
+          <div class="kpi-delta">↑ +2 vs last week</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Calories Burned</div>
+          <div class="kpi-value">2,840</div>
+          <div class="kpi-unit">kcal this week</div>
+          <div class="kpi-delta">↑ +18%</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Active Streak</div>
+          <div class="kpi-value">14</div>
+          <div class="kpi-unit">days 🔥</div>
+          <div class="kpi-delta">↑ Personal Best</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Avg Session</div>
+          <div class="kpi-value">47</div>
+          <div class="kpi-unit">minutes</div>
+          <div class="kpi-delta down">↓ -3 min</div>
+        </div>
+      </div>
+
+      <div class="dash-charts">
+        <div class="chart-card">
+          <div class="chart-title">Weekly Activity (min)</div>
+          <div class="bar-chart">
+            <div class="bar-wrap"><div class="bar" style="height:55%"></div><div class="bar-label">M</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:75%"></div><div class="bar-label">T</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:40%"></div><div class="bar-label">W</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:90%"></div><div class="bar-label">T</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:65%"></div><div class="bar-label">F</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:20%;background:var(--surface2)"></div><div class="bar-label">S</div></div>
+            <div class="bar-wrap"><div class="bar" style="height:0%;background:var(--surface2)"></div><div class="bar-label">S</div></div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Workout Mix</div>
+          <div class="ring-chart">
+            <svg class="ring-svg" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="var(--surface2)" stroke-width="14"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="var(--accent)" stroke-width="14" stroke-dasharray="75 175" stroke-dashoffset="25" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="var(--accent3)" stroke-width="14" stroke-dasharray="50 175" stroke-dashoffset="-50" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="var(--accent2)" stroke-width="14" stroke-dasharray="30 175" stroke-dashoffset="-100" transform="rotate(-90 50 50)"/>
+              <text x="50" y="54" text-anchor="middle" font-size="12" fill="var(--text)" font-family="var(--font-display)">MIX</text>
+            </svg>
+            <div class="ring-legend">
+              <div class="ring-item"><div class="ring-dot" style="background:var(--accent)"></div>Strength 30%</div>
+              <div class="ring-item"><div class="ring-dot" style="background:var(--accent3)"></div>Yoga 20%</div>
+              <div class="ring-item"><div class="ring-dot" style="background:var(--accent2)"></div>HIIT 12%</div>
+              <div class="ring-item"><div class="ring-dot" style="background:var(--surface2)"></div>Other 38%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="fade-in">
+    <div class="section-tag">PLATFORM FEATURES</div>
+    <h2 class="section-title">BUILT FOR<br>REAL RESULTS</h2>
+    <p class="section-desc">Everything you need to train smarter, stay consistent, and reach your goals faster.</p>
+  </div>
+
+  <div class="features-grid fade-in">
+    <div class="feature-card large">
+      <div class="feature-num">01</div>
+      <div class="feature-icon">🎯</div>
+      <div class="feature-title">Flexible Scheduling</div>
+      <div class="feature-desc">Train on your terms. With 1,200+ on-demand classes and live sessions across all time zones, your workout fits around your life — not the other way around.</div>
+      <ul class="feature-list">
+        <li>Live classes across 12 time zones daily</li>
+        <li>On-demand library — pause, rewind, repeat</li>
+        <li>Sync with Google, Apple & Outlook calendars</li>
+        <li>Smart scheduling AI suggests optimal times</li>
+      </ul>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-num">02</div>
+      <div class="feature-icon">📱</div>
+      <div class="feature-title">App Integration</div>
+      <div class="feature-desc">Seamlessly connects with Apple Health, Google Fit, Garmin, Whoop, and 20+ fitness apps for a complete health picture.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-num">03</div>
+      <div class="feature-icon">🤖</div>
+      <div class="feature-title">AI Progress Tracking</div>
+      <div class="feature-desc">Personalized insights based on your performance. AI identifies gaps, celebrates wins, and adjusts recommendations weekly.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-num">04</div>
+      <div class="feature-icon">🌍</div>
+      <div class="feature-title">Global Community</div>
+      <div class="feature-desc">Join challenges, share milestones, and find accountability partners from our 50,000+ member community around the world.</div>
+    </div>
+
+    <div class="feature-card large">
+      <div class="feature-num">05</div>
+      <div class="feature-icon">💰</div>
+      <div class="feature-title">Cost-Effective Fitness</div>
+      <div class="feature-desc">One membership unlocks everything. Unlimited classes, personal training credits, and premium content — at a fraction of traditional gym costs.</div>
+      <ul class="feature-list">
+        <li>No commute, no gym fees, no hidden costs</li>
+        <li>Personal training from $15/session</li>
+        <li>Family plans available from $39/mo</li>
+        <li>30-day free trial, cancel anytime</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- APP DOWNLOAD -->
+<section id="app">
+  <div class="app-bg"></div>
+  <div class="section-tag fade-in">FITNESS APP</div>
+  <h2 class="section-title fade-in">TAKE IT<br>ANYWHERE</h2>
+  <p class="section-desc fade-in" style="margin: 0 auto 48px">Train offline, track outdoor runs, stream classes to your TV, or cast workouts to your phone. FitForge goes where you go.</p>
+
+  <div class="app-badges fade-in">
+    <a class="app-badge" href="#">
+      <div class="app-badge-icon">🍎</div>
+      <div class="app-badge-text">
+        <div class="app-badge-small">Download on the</div>
+        <div class="app-badge-name">App Store</div>
+      </div>
+    </a>
+    <a class="app-badge" href="#">
+      <div class="app-badge-icon">▶</div>
+      <div class="app-badge-text">
+        <div class="app-badge-small">Get it on</div>
+        <div class="app-badge-name">Google Play</div>
+      </div>
+    </a>
+    <a class="app-badge" href="#">
+      <div class="app-badge-icon">📺</div>
+      <div class="app-badge-text">
+        <div class="app-badge-small">Available on</div>
+        <div class="app-badge-name">Apple TV</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="app-phones fade-in">
+    <div class="phone-mockup">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-ui-bar accent"></div>
+        <div class="phone-ui-bar short"></div>
+        <div class="phone-ui-card">
+          <div style="font-size:24px">🧘</div>
+          <div class="phone-ui-small"></div>
+        </div>
+        <div class="phone-ui-bar"></div>
+        <div class="phone-ui-bar short"></div>
+        <div class="phone-ui-bar"></div>
+      </div>
+    </div>
+    <div class="phone-mockup main">
+      <div class="phone-notch"></div>
+      <div class="phone-screen main-screen">
+        <div class="phone-ui-card">
+          <div class="phone-ui-num">14🔥</div>
+          <div class="phone-ui-small"></div>
+          <div class="phone-ui-small" style="width:50%"></div>
+        </div>
+        <div class="phone-ui-bar accent"></div>
+        <div class="phone-ui-bar"></div>
+        <div class="phone-ui-card">
+          <div style="font-size:30px">⚡</div>
+          <div class="phone-ui-small"></div>
+        </div>
+        <div class="phone-ui-bar short"></div>
+        <div class="phone-ui-bar"></div>
+        <div class="phone-ui-bar short" style="background:rgba(200,245,66,0.15)"></div>
+      </div>
+    </div>
+    <div class="phone-mockup">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="font-size:36px;text-align:center;padding:10px">💪</div>
+        <div class="phone-ui-bar accent"></div>
+        <div class="phone-ui-bar short"></div>
+        <div class="phone-ui-bar"></div>
+        <div class="phone-ui-card">
+          <div class="phone-ui-small"></div>
+          <div class="phone-ui-small" style="width:60%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSIDERATIONS -->
+<section id="considerations">
+  <div class="fade-in">
+    <div class="section-tag">HONEST OVERVIEW</div>
+    <h2 class="section-title">WHAT TO<br>EXPECT</h2>
+    <p class="section-desc">We believe in transparency. Here's what online training does brilliantly — and where to be mindful.</p>
+  </div>
+
+  <div class="consider-grid fade-in">
+    <div class="consider-card pro">
+      <div class="consider-icon">✅</div>
+      <div class="consider-title">Unmatched Convenience</div>
+      <div class="consider-desc">Train from your living room, a hotel room, or a park. No commute, no waiting for machines, no time wasted. Just you and your workout, on demand.</div>
+    </div>
+    <div class="consider-card pro">
+      <div class="consider-icon">✅</div>
+      <div class="consider-title">Expert Access Worldwide</div>
+      <div class="consider-desc">Access elite trainers in Tokyo, London, New York — all in one platform. Your local gym can't match the breadth of expertise available here.</div>
+    </div>
+    <div class="consider-card pro">
+      <div class="consider-icon">✅</div>
+      <div class="consider-title">Go At Your Own Pace</div>
+      <div class="consider-desc">Pause, rewind, and repeat without judgment. Our library is yours — whether you're a beginner or an advanced athlete, there's no pressure.</div>
+    </div>
+    <div class="consider-card warn">
+      <div class="consider-icon">⚠️</div>
+      <div class="consider-title">Staying Motivated</div>
+      <div class="consider-desc">Without a physical gym environment, motivation can dip. We combat this with live classes, streak tracking, community challenges, and accountability partners built into every plan.</div>
+    </div>
+    <div class="consider-card warn">
+      <div class="consider-icon">⚠️</div>
+      <div class="consider-title">Limited Hands-On Correction</div>
+      <div class="consider-desc">Online coaching can't physically adjust your form. We mitigate this with AI form analysis via your phone camera, detailed technique breakdowns, and optional video check-ins.</div>
+    </div>
+    <div class="consider-card warn">
+      <div class="consider-icon">⚠️</div>
+      <div class="consider-title">Equipment Needs</div>
+      <div class="consider-desc">Some classes need weights or resistance bands. We clearly label equipment requirements up front, and 30%+ of our library is fully bodyweight — no gear needed.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="fade-in">
+    <div class="section-tag">PRICING</div>
+    <h2 class="section-title">SIMPLE,<br>TRANSPARENT</h2>
+    <p class="section-desc">No hidden fees. No long contracts. Try any plan free for 30 days.</p>
+  </div>
+
+  <div class="pricing-grid fade-in">
+    <div class="pricing-card">
+      <div class="plan-name">STARTER</div>
+      <div class="plan-desc">Perfect for beginners building a habit</div>
+      <div class="plan-price">
+        <span class="amount">$9</span>
+        <span class="per">/month</span>
+      </div>
+      <div class="plan-features">
+        <div class="plan-feature"><span class="check">✓</span> 50 on-demand classes/mo</div>
+        <div class="plan-feature"><span class="check">✓</span> Progress tracking</div>
+        <div class="plan-feature"><span class="check">✓</span> Community access</div>
+        <div class="plan-feature"><span class="cross">✗</span> Live classes</div>
+        <div class="plan-feature"><span class="cross">✗</span> Personal training</div>
+        <div class="plan-feature"><span class="cross">✗</span> App integrations</div>
+      </div>
+      <button class="btn-ghost" style="width:100%;justify-content:center">Start Free Trial</button>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="popular-badge">MOST POPULAR</div>
+      <div class="plan-name">PRO</div>
+      <div class="plan-desc">The full FitForge experience</div>
+      <div class="plan-price">
+        <span class="amount">$29</span>
+        <span class="per">/month</span>
+      </div>
+      <div class="plan-features">
+        <div class="plan-feature"><span class="check">✓</span> Unlimited on-demand classes</div>
+        <div class="plan-feature"><span class="check">✓</span> Unlimited live classes</div>
+        <div class="plan-feature"><span class="check">✓</span> AI progress tracking</div>
+        <div class="plan-feature"><span class="check">✓</span> App integrations</div>
+        <div class="plan-feature"><span class="check">✓</span> 2 personal sessions/mo</div>
+        <div class="plan-feature"><span class="check">✓</span> Priority booking</div>
+      </div>
+      <button class="btn-primary" style="width:100%">Start Free Trial</button>
+    </div>
+
+    <div class="pricing-card">
+      <div class="plan-name">ELITE</div>
+      <div class="plan-desc">For serious athletes & teams</div>
+      <div class="plan-price">
+        <span class="amount">$79</span>
+        <span class="per">/month</span>
+      </div>
+      <div class="plan-features">
+        <div class="plan-feature"><span class="check">✓</span> Everything in Pro</div>
+        <div class="plan-feature"><span class="check">✓</span> 8 personal sessions/mo</div>
+        <div class="plan-feature"><span class="check">✓</span> Custom training plan</div>
+        <div class="plan-feature"><span class="check">✓</span> Nutrition coaching</div>
+        <div class="plan-feature"><span class="check">✓</span> Team & family (5 seats)</div>
+        <div class="plan-feature"><span class="check">✓</span> Dedicated coach</div>
+      </div>
+      <button class="btn-ghost" style="width:100%;justify-content:center">Start Free Trial</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#hero" class="nav-logo">FIT<span>FORGE</span></a>
+      <p>World-class fitness training without limits. Join 50,000+ members transforming their health from wherever they are.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-heading">Platform</div>
+      <ul class="footer-links">
+        <li><a href="#workouts">Workout Library</a></li>
+        <li><a href="#classes">Live Classes</a></li>
+        <li><a href="#trainers">Trainers</a></li>
+        <li><a href="#dashboard">Progress Dashboard</a></li>
+        <li><a href="#app">Mobile App</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-heading">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Press Kit</a></li>
+        <li><a href="#">Become a Trainer</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-heading">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Community</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 FitForge Inc. All rights reserved. Train without limits.</p>
+    <div class="footer-social">
+      <button class="social-btn">𝕏</button>
+      <button class="social-btn">in</button>
+      <button class="social-btn">▶</button>
+      <button class="social-btn">📸</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ─── MOBILE MENU ───
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // ─── NAV COMPACT ON SCROLL ───
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 80) {
+      nav.style.padding = '12px 48px';
+    } else {
+      nav.style.padding = '20px 48px';
+    }
+  });
+
+  // ─── SCROLL FADE IN ───
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // ─── MINI CALENDAR ───
+  function buildCalendar() {
+    const grid = document.getElementById('calendar');
+    if (!grid) return;
+    const days = ['S','M','T','W','T','F','S'];
+    const hasClass = [3,5,7,10,12,14,15,17,19,21,22,24,26,28,31];
+    const today = 31;
+
+    days.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'cal-day header';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+
+    // April 2026 starts on Wednesday (offset 3)
+    for (let i = 0; i < 3; i++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day';
+      grid.appendChild(el);
+    }
+
+    for (let d = 1; d <= 30; d++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day' + (hasClass.includes(d) ? ' has-class' : '') + (d === today ? ' active' : '');
+      el.textContent = d;
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.cal-day.active').forEach(x => x.classList.remove('active'));
+        el.classList.add('active');
+      });
+      grid.appendChild(el);
+    }
+  }
+
+  buildCalendar();
+
+  // ─── WORKOUT TABS ───
+  function filterTab(btn, type) {
+    document.querySelectorAll('.workout-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // ─── SMOOTH SCROLL HELPER ───
+  function scrollTo(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
